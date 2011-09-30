@@ -29,14 +29,13 @@ CodeMirror.defineMode("perl",function(config,parserConfig){
 					escaped=!escaped&&next=="\\"}}
 			if(eatMore)
 				stream.eatWhile(eatMore);
-			return type=="regexp"?"atom":type}}
+			return type=="regexp"?"number":type}}
 
 	var indentUnit=config.indentUnit;
-	var keywords=words("bootstrap new base constant continue else elsif for foreach format goto if last our local my next no package parent redo require scalar sub unless until while use const vars ARGV ENV INC SIG getprotobynumber getprotobyname getservbyname gethostbyaddr gethostbyname getservbyport getnetbyaddr getnetbyname getsockname getpeername setpriority getprotoent setprotoent getpriority endprotoent getservent setservent endservent sethostent socketpair getsockopt gethostent endhostent setsockopt setnetent quotemeta localtime prototype getnetent endnetent rewinddir wantarray getpwuid closedir getlogin readlink endgrent getgrgid getgrnam shmwrite shutdown readline endpwent setgrent readpipe formline truncate dbmclose syswrite setpwent getpwnam getgrent getpwent ucfirst sysread setpgrp shmread sysseek sysopen telldir defined opendir connect lcfirst getppid binmode syscall sprintf getpgrp readdir seekdir waitpid reverse unshift symlink dbmopen semget msgrcv rename listen chroot msgsnd shmctl accept unpack exists fileno shmget system unlink printf gmtime msgctl semctl values rindex substr splice length msgget select socket return caller delete alarm ioctl index undef lstat times srand chown fcntl close write umask rmdir study sleep chomp untie print utime mkdir atan2 split crypt flock chmod BEGIN bless unbless chdir semop shift reset link stat chop grep fork dump join open tell pipe exit glob warn each bind sort pack eval push keys getc kill seek sqrt send wait rand tied read time exec recv eof chr int ord exp pos pop sin log abs oct hex tie cos vec END ref map die uc lc do");
+	var keywords=words("bootstrap new base constant continue else elsif for foreach format semctl shmctl shmget semget goto if last our local my next no package parent redo require scalar sub unless until while use const vars ARGV ENV INC SIG getprotobynumber getprotobyname getservbyname gethostbyaddr gethostbyname getservbyport getnetbyaddr getnetbyname getsockname getpeername setpriority getprotoent setprotoent getpriority endprotoent getservent setservent endservent sethostent socketpair getsockopt gethostent endhostent setsockopt setnetent quotemeta localtime prototype getnetent endnetent rewinddir wantarray getpwuid closedir getlogin readlink endgrent getgrgid getgrnam shmwrite shutdown readline endpwent setgrent readpipe formline truncate dbmclose syswrite setpwent getpwnam getgrent getpwent ucfirst sysread setpgrp shmread sysseek sysopen telldir defined opendir connect lcfirst getppid binmode syscall sprintf getpgrp readdir seekdir waitpid reverse unshift symlink dbmopen semget msgrcv rename listen chroot msgsnd shmctl accept unpack exists fileno shmget system unlink printf gmtime msgctl semctl values rindex substr splice length msgget select socket return caller delete alarm ioctl index undef lstat times srand chown fcntl close write umask rmdir study sleep chomp untie print utime mkdir atan2 split crypt flock chmod BEGIN bless unbless chdir semop shift reset link stat chop grep fork dump join open tell pipe exit glob warn each bind sort pack eval push keys getc kill seek sqrt send wait rand tied read time exec recv eof chr int ord exp pos pop sin log abs oct hex tie cos vec END ref map die uc lc do");
 	var blockKeywords=words("if elsif else unless while do sub map BEGIN END PRINT PRINTF DESTROY TIE UNTIE READ");
 	var atoms=words("sub undef or xor and not x eq ne cmp");
 	var multiLineStrings=true;
-	var electricChars="/{}[]()";
 
 	var hooks={
 		"$":function(stream,state){
@@ -179,7 +178,7 @@ CodeMirror.defineMode("perl",function(config,parserConfig){
 		if(/[+\-*&%=<>!?|\/~\.]/.test(ch)){
 			stream.eatWhile(ch);
 			return "operator"}
-		stream.eatWhile(/[\w\$_]/);
+		stream.eatWhile(/[\w\$]/);
 		var cur=stream.current();
 		if(keywords.propertyIsEnumerable(cur)){
 			if(blockKeywords.propertyIsEnumerable(cur))
