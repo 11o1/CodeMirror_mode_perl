@@ -1,42 +1,9 @@
-hi. this is an alpha 0.03 (2011-10-01) of mode/perl.js (text/x-perl)
+hi. this is an alpha 0.04 (2011-10-02) of mode/perl.js (text/x-perl)
+
+this is a new paranoid code with something from perldoc.perl.org
 
 something may be wrong.
 
-now this work as a mirror of clike.js, but with perl keywords, multiline strings and regexp.
-
-numbers like:
-
-1_000_000.123
-
-strings like:
-
-"..\".."; '..\'..'; qq(..); qw^..^;
-
-regular expressions like:
-
-qr/.*?(?=x)/;
-
-/something\ reg[eE]xp\ strings/;
-
-tr///; y///;
-
-m[
-  something as well
-]x;
-
-m{[^x]+}o;
-
-s/  (x?)      /
-  if($1){"y"}
-              /gosex;
-
-$var=<<HTML
-  this strings is not working now...
-HTML
-
-at the end of perl.js I added a new function "stream.look(index)" for a look-ahead and look-behind. 
-it's work like "stream.peek()", but with an index.
-
-next steps: regexp highlighting, <<VAR...VAR and more and more...
+beta soon...
 
 sabaca.
