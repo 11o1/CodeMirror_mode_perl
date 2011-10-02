@@ -1,4 +1,4 @@
-// CodeMirror2 mode/perl/perl.js (text/x-perl) alpha 0.04 (2011-10-02)
+// CodeMirror2 mode/perl/perl.js (text/x-perl) alpha 0.05 (2011-10-02)
 // This is a part of CodeMirror from https://github.com/sabaca/CodeMirror_mode_perl (mail@sabaca.com)
 CodeMirror.defineMode("perl",function(config,parserConfig){
 	// http://perldoc.perl.org
@@ -490,202 +490,191 @@ CodeMirror.defineMode("perl",function(config,parserConfig){
 
 	function tokenBase(stream,state){
 		var ch=stream.next();
+		if(/[+\-\^*\$&%@=<>!?|\/~\.]/.test(ch)){
+			var p=stream.pos;
+			stream.eatWhile(ch);
+			if(PERL[stream.current()])
+				return "operator";
+			else
+				stream.pos=p}
 		if(/[$@%&]/.test(ch)){
 			if(stream.eatWhile(/[\w\$\[\]]/)){
 				var c=stream.current();
-				if(PERL[stream.look(-1)+c])
+				if(PERL[c])
 					return "variable-2";
 				else
 					return "variable"}
 			return false}
 		if(ch==":"){
 			if(stream.eat(":"))
-				return "operator";
-			return false}
+				return "operator"}
 		if(ch=="-"){
 			if(stream.eat(">"))
-				return "operator";
-			return false}
+				return "operator"}
 		if(ch=="#"){
 			if(stream.look(-2)!="$"){
 				stream.skipToEnd();
-				return "comment"}
-			return false}
+				return "comment"}}
 		if(ch=="q"){
 			var c=stream.look(-2);
-			if(c&&/\w/.test(c))
-				return false;
-			if(/[qx]/.test(stream.look(0))){
-				if(stream.look(1)=="("){
-					stream.eat(/[qx]/);
-					stream.eat("(");
-					state.tokenize=tokenSomething(")","string");
-					return state.tokenize(stream,state)}
-				if(stream.look(1)=="["){
-					stream.eat(/[qx]/);
-					stream.eat("[");
-					state.tokenize=tokenSomething("]","string");
-					return state.tokenize(stream,state)}
-				if(stream.look(1)=="{"){
-					stream.eat(/[qx]/);
-					stream.eat("{");
-					state.tokenize=tokenSomething("}","string");
-					return state.tokenize(stream,state)}
-				if(stream.look(1)=="<"){
-					stream.eat(/[qx]/);
-					stream.eat("<");
-					state.tokenize=tokenSomething(">","string");
-					return state.tokenize(stream,state)}
-				if(/[\^'"!~\/]/.test(stream.look(1))){
-					stream.eat(/[qx]/);
-					state.tokenize=tokenSomething(stream.eat(/[\^'"!~\/]/),"string");
-					return state.tokenize(stream,state)}}
-			else if(stream.look(0)=="w"){
-				if(stream.look(1)=="("){
-					stream.eat("w");
-					stream.eat("(");
-					state.tokenize=tokenSomething(")","bracket");
-					return state.tokenize(stream,state)}
-				if(stream.look(1)=="["){
-					stream.eat("w");
-					stream.eat("[");
-					state.tokenize=tokenSomething("]","bracket");
-					return state.tokenize(stream,state)}
-				if(stream.look(1)=="{"){
-					stream.eat("w");
-					stream.eat("{");
-					state.tokenize=tokenSomething("}","bracket");
-					return state.tokenize(stream,state)}
-				if(stream.look(1)=="<"){
-					stream.eat("w");
-					stream.eat("<");
-					state.tokenize=tokenSomething(">","bracket");
-					return state.tokenize(stream,state)}
-				if(/[\^'"!~\/]/.test(stream.look(1))){
-					stream.eat("w");
-					state.tokenize=tokenSomething(stream.eat(/[\^'"!~\/]/),"bracket");
-					return state.tokenize(stream,state)}}
-			else if(stream.look(0)=="r"){
-				if(stream.look(1)=="("){
-					stream.eat("r");
-					stream.eat("(");
-					state.tokenize=tokenSomething(")","regexp",/[gosexp]/);
-					return state.tokenize(stream,state)}
-				if(stream.look(1)=="["){
-					stream.eat("r");
-					stream.eat("[");
-					state.tokenize=tokenSomething("]","regexp",/[gosexp]/);
-					return state.tokenize(stream,state)}
-				if(stream.look(1)=="{"){
-					stream.eat("r");
-					stream.eat("{");
-					state.tokenize=tokenSomething("}","regexp",/[gosexp]/);
-					return state.tokenize(stream,state)}
-				if(stream.look(1)=="<"){
-					stream.eat("r");
-					stream.eat("<");
-					state.tokenize=tokenSomething(">","regexp",/[gosexp]/);
-					return state.tokenize(stream,state)}
-				if(/[\^'"!~\/]/.test(stream.look(1))){
-					stream.eat("r");
-					state.tokenize=tokenSomething(stream.eat(/[\^'"!~\/]/),"regexp",/[gosexp]/);
-					return state.tokenize(stream,state)}}
-			return false}
+			if(!(c&&/\w/.test(c))){
+				if(/[qx]/.test(stream.look(0))){
+					if(stream.look(1)=="("){
+						stream.eat(/[qx]/);
+						stream.eat("(");
+						state.tokenize=tokenSomething(")","string");
+						return state.tokenize(stream,state)}
+					if(stream.look(1)=="["){
+						stream.eat(/[qx]/);
+						stream.eat("[");
+						state.tokenize=tokenSomething("]","string");
+						return state.tokenize(stream,state)}
+					if(stream.look(1)=="{"){
+						stream.eat(/[qx]/);
+						stream.eat("{");
+						state.tokenize=tokenSomething("}","string");
+						return state.tokenize(stream,state)}
+					if(stream.look(1)=="<"){
+						stream.eat(/[qx]/);
+						stream.eat("<");
+						state.tokenize=tokenSomething(">","string");
+						return state.tokenize(stream,state)}
+					if(/[\^'"!~\/]/.test(stream.look(1))){
+						stream.eat(/[qx]/);
+						state.tokenize=tokenSomething(stream.eat(/[\^'"!~\/]/),"string");
+						return state.tokenize(stream,state)}}
+				else if(stream.look(0)=="w"){
+					if(stream.look(1)=="("){
+						stream.eat("w");
+						stream.eat("(");
+						state.tokenize=tokenSomething(")","bracket");
+						return state.tokenize(stream,state)}
+					if(stream.look(1)=="["){
+						stream.eat("w");
+						stream.eat("[");
+						state.tokenize=tokenSomething("]","bracket");
+						return state.tokenize(stream,state)}
+					if(stream.look(1)=="{"){
+						stream.eat("w");
+						stream.eat("{");
+						state.tokenize=tokenSomething("}","bracket");
+						return state.tokenize(stream,state)}
+					if(stream.look(1)=="<"){
+						stream.eat("w");
+						stream.eat("<");
+						state.tokenize=tokenSomething(">","bracket");
+						return state.tokenize(stream,state)}
+					if(/[\^'"!~\/]/.test(stream.look(1))){
+						stream.eat("w");
+						state.tokenize=tokenSomething(stream.eat(/[\^'"!~\/]/),"bracket");
+						return state.tokenize(stream,state)}}
+				else if(stream.look(0)=="r"){
+					if(stream.look(1)=="("){
+						stream.eat("r");
+						stream.eat("(");
+						state.tokenize=tokenSomething(")","regexp",/[gosexp]/);
+						return state.tokenize(stream,state)}
+					if(stream.look(1)=="["){
+						stream.eat("r");
+						stream.eat("[");
+						state.tokenize=tokenSomething("]","regexp",/[gosexp]/);
+						return state.tokenize(stream,state)}
+					if(stream.look(1)=="{"){
+						stream.eat("r");
+						stream.eat("{");
+						state.tokenize=tokenSomething("}","regexp",/[gosexp]/);
+						return state.tokenize(stream,state)}
+					if(stream.look(1)=="<"){
+						stream.eat("r");
+						stream.eat("<");
+						state.tokenize=tokenSomething(">","regexp",/[gosexp]/);
+						return state.tokenize(stream,state)}
+					if(/[\^'"!~\/]/.test(stream.look(1))){
+						stream.eat("r");
+						state.tokenize=tokenSomething(stream.eat(/[\^'"!~\/]/),"regexp",/[gosexp]/);
+						return state.tokenize(stream,state)}}}}
 		if(ch=="m"){
 			var c=stream.look(-2);
-			if(c&&/\w/.test(c))
-				return false;
-			c=stream.eat(/[(\[{<\^'"!~\/]/);
-			if(!c)
-				return false;
-			if(/[\^'"!~\/]/.test(c)){
-				state.tokenize=tokenSomething(c,"regexp",/[gosexp]/);
-				return state.tokenize(stream,state)}
-			if(c=="("){
-				state.tokenize=tokenSomething(")","regexp",/[gosexp]/);
-				return state.tokenize(stream,state)}
-			if(c=="["){
-				state.tokenize=tokenSomething("]","regexp",/[gosexp]/);
-				return state.tokenize(stream,state)}
-			if(c=="{"){
-				state.tokenize=tokenSomething("}","regexp",/[gosexp]/);
-				return state.tokenize(stream,state)}
-			if(c=="<"){
-				state.tokenize=tokenSomething(">","regexp",/[gosexp]/);
-				return state.tokenize(stream,state)}
-			return false}
+			if(!(c&&/\w/.test(c))){
+				c=stream.eat(/[(\[{<\^'"!~\/]/);
+				if(c){
+					if(/[\^'"!~\/]/.test(c)){
+						state.tokenize=tokenSomething(c,"regexp",/[gosexp]/);
+						return state.tokenize(stream,state)}
+					if(c=="("){
+						state.tokenize=tokenSomething(")","regexp",/[gosexp]/);
+						return state.tokenize(stream,state)}
+					if(c=="["){
+						state.tokenize=tokenSomething("]","regexp",/[gosexp]/);
+						return state.tokenize(stream,state)}
+					if(c=="{"){
+						state.tokenize=tokenSomething("}","regexp",/[gosexp]/);
+						return state.tokenize(stream,state)}
+					if(c=="<"){
+						state.tokenize=tokenSomething(">","regexp",/[gosexp]/);
+						return state.tokenize(stream,state)}}}}
 		if(ch=="s"){
 			var c=stream.look(-2);
-			if(c&&/\w/.test(c))
-				return false;
-			c=stream.eat(/[(\[{<\^'"!~\/]/);
-			if(!c)
-				return false;
-			if(/[\^'"!~\/]/.test(c)){
-				state.tokenize=tokenSomething(c,"regexp",/[gosexp]/,c);
-				return state.tokenize(stream,state)}
-			if(c=="("){
-				state.tokenize=tokenSomething(")","regexp",/[gosexp]/,")","(");
-				return state.tokenize(stream,state)}
-			if(c=="["){
-				state.tokenize=tokenSomething("]","regexp",/[gosexp]/,"]","[");
-				return state.tokenize(stream,state)}
-			if(c=="{"){
-				state.tokenize=tokenSomething("}","regexp",/[gosexp]/,"}","{");
-				return state.tokenize(stream,state)}
-			if(c=="<"){
-				state.tokenize=tokenSomething(">","regexp",/[gosexp]/,">","<");
-				return state.tokenize(stream,state)}
-			return false}
+			if(!(c&&/\w/.test(c))){
+				c=stream.eat(/[(\[{<\^'"!~\/]/);
+				if(c){
+					if(/[\^'"!~\/]/.test(c)){
+						state.tokenize=tokenSomething(c,"regexp",/[gosexp]/,c);
+						return state.tokenize(stream,state)}
+					if(c=="("){
+						state.tokenize=tokenSomething(")","regexp",/[gosexp]/,")","(");
+						return state.tokenize(stream,state)}
+					if(c=="["){
+						state.tokenize=tokenSomething("]","regexp",/[gosexp]/,"]","[");
+						return state.tokenize(stream,state)}
+					if(c=="{"){
+						state.tokenize=tokenSomething("}","regexp",/[gosexp]/,"}","{");
+						return state.tokenize(stream,state)}
+					if(c=="<"){
+						state.tokenize=tokenSomething(">","regexp",/[gosexp]/,">","<");
+						return state.tokenize(stream,state)}}}}
 		if(ch=="y"){
 			var c=stream.look(-2);
-			if(c&&/\w/.test(c))
-				return false;
-			c=stream.eat(/[(\[{<\^'"!~\/]/);
-			if(!c)
-				return false;
-			if(/[\^'"!~\/]/.test(c)){
-				state.tokenize=tokenSomething(c,"regexp",/[gosexp]/,c);
-				return state.tokenize(stream,state)}
-			if(c=="("){
-				state.tokenize=tokenSomething(")","regexp",/[gosexp]/,")","(");
-				return state.tokenize(stream,state)}
-			if(c=="["){
-				state.tokenize=tokenSomething("]","regexp",/[gosexp]/,"]","[");
-				return state.tokenize(stream,state)}
-			if(c=="{"){
-				state.tokenize=tokenSomething("}","regexp",/[gosexp]/,"}","{");
-				return state.tokenize(stream,state)}
-			if(c=="<"){
-				state.tokenize=tokenSomething(">","regexp",/[gosexp]/,">","<");
-				return state.tokenize(stream,state)}
-			return false}
+			if(!(c&&/\w/.test(c))){
+				c=stream.eat(/[(\[{<\^'"!~\/]/);
+				if(c){
+					if(/[\^'"!~\/]/.test(c)){
+						state.tokenize=tokenSomething(c,"regexp",/[gosexp]/,c);
+						return state.tokenize(stream,state)}
+					if(c=="("){
+						state.tokenize=tokenSomething(")","regexp",/[gosexp]/,")","(");
+						return state.tokenize(stream,state)}
+					if(c=="["){
+						state.tokenize=tokenSomething("]","regexp",/[gosexp]/,"]","[");
+						return state.tokenize(stream,state)}
+					if(c=="{"){
+						state.tokenize=tokenSomething("}","regexp",/[gosexp]/,"}","{");
+						return state.tokenize(stream,state)}
+					if(c=="<"){
+						state.tokenize=tokenSomething(">","regexp",/[gosexp]/,">","<");
+						return state.tokenize(stream,state)}}}}
 		if(ch=="t"){
 			var c=stream.look(-2);
-			if(c&&/\w/.test(c))
-				return false;
-			c=stream.eat("r");
-			if(!c)
-				return false;
-			c=stream.eat(/[(\[{<\^'"!~\/]/);
-			if(!c)
-				return false;
-			if(/[\^'"!~\/]/.test(c)){
-				state.tokenize=tokenSomething(c,"regexp",/[gosexp]/,c);
-				return state.tokenize(stream,state)}
-			if(c=="("){
-				state.tokenize=tokenSomething(")","regexp",/[gosexp]/,")","(");
-				return state.tokenize(stream,state)}
-			if(c=="["){
-				state.tokenize=tokenSomething("]","regexp",/[gosexp]/,"]","[");
-				return state.tokenize(stream,state)}
-			if(c=="{"){
-				state.tokenize=tokenSomething("}","regexp",/[gosexp]/,"}","{");
-				return state.tokenize(stream,state)}
-			if(c=="<"){
-				state.tokenize=tokenSomething(">","regexp",/[gosexp]/,">","<");
-				return state.tokenize(stream,state)}
-			return false}
+			if(!(c&&/\w/.test(c))){
+				c=stream.eat("r");
+				if(c){
+					c=stream.eat(/[(\[{<\^'"!~\/]/);
+					if(c){
+						if(/[\^'"!~\/]/.test(c)){
+							state.tokenize=tokenSomething(c,"regexp",/[gosexp]/,c);
+							return state.tokenize(stream,state)}
+						if(c=="("){
+							state.tokenize=tokenSomething(")","regexp",/[gosexp]/,")","(");
+							return state.tokenize(stream,state)}
+						if(c=="["){
+							state.tokenize=tokenSomething("]","regexp",/[gosexp]/,"]","[");
+							return state.tokenize(stream,state)}
+						if(c=="{"){
+							state.tokenize=tokenSomething("}","regexp",/[gosexp]/,"}","{");
+							return state.tokenize(stream,state)}
+						if(c=="<"){
+							state.tokenize=tokenSomething(">","regexp",/[gosexp]/,">","<");
+							return state.tokenize(stream,state)}}}}}
 		if(ch=="/"){
 			state.tokenize=tokenSomething("/","regexp",/[gosexp]/);
 			return state.tokenize(stream,state)}
@@ -711,8 +700,7 @@ CodeMirror.defineMode("perl",function(config,parserConfig){
 					return state.tokenize(stream,state)}
 				else if(stream.suffix(7)=="_C__"){
 					state.tokenize=tokenSomething('\0',"string");
-					return state.tokenize(stream,state)}}
-			return false}
+					return state.tokenize(stream,state)}}}
 		if(ch=='"'||ch=="'"){
 			state.tokenize=tokenString(ch);
 			return state.tokenize(stream,state)}
@@ -739,11 +727,6 @@ CodeMirror.defineMode("perl",function(config,parserConfig){
 			return "number"}
 		if(ch=="."&&/[^\.\w]/.test(stream.look(-2))&&stream.eatWhile(/\d/)){
 			return "number"}
-		if(ch=="."){
-			return "operator"}
-		if(/[+\-\^*\$&%@=<>!?|\/~\.]/.test(ch)){
-			stream.eatWhile(ch);
-			return "operator"}
 		if(/[A-Z]/.test(ch)){
 			var l=stream.look(-2);
 			var p=stream.pos;

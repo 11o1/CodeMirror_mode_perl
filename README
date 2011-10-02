@@ -1,6 +1,6 @@
-hi. this is an alpha 0.04 (2011-10-02) of mode/perl.js (text/x-perl)
+hi. this is an alpha 0.05 (2011-10-02) of mode/perl.js (text/x-perl)
 
-this is a new paranoid code with something from perldoc.perl.org
+fixes: eating of operators and predefined variables.
 
 something may be wrong.
 
