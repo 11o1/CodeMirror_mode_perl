@@ -1,9 +1,18 @@
-hi. this is an alpha 0.05 (2011-10-02) of mode/perl.js (text/x-perl)
+hi. this is an alpha 0.06 (2011-10-04) of mode/perl.js (text/x-perl)
 
-fixes: eating of operators and predefined variables.
+fixes: eating of operators, predefined variables and regexp.
+
+bugs: electricChars: I don't understand, how it work. need help.
+      regular expressions highlighting:
+      $regexp=~s[is][working]gx;
+      $regexp=~s[is
+		][working]gx;
+      $regexp=~s[is][
+                      not working
+                    ]gx;
 
 something may be wrong.
 
-beta soon...
+beta next.
 
 sabaca.
