@@ -1,18 +1,10 @@
-hi. this is an alpha 0.06 (2011-10-04) of mode/perl.js (text/x-perl)
+hi. this is a beta 0.07 (2011-10-11) of mode/perl.js (text/x-perl)
 
-fixes: eating of operators, predefined variables and regexp.
+fixes: eating of multi-line multi-block regexp like s/..
+							./.
+							../x
+       and numbers like -1.3e-9 and 0b01101111;
 
-bugs: electricChars: I don't understand, how it work. need help.
-      regular expressions highlighting:
-      $regexp=~s[is][working]gx;
-      $regexp=~s[is
-		][working]gx;
-      $regexp=~s[is][
-                      not working
-                    ]gx;
-
-something may be wrong.
-
-beta next.
+bugs: let me know <mail@sabaca.com>.
 
 sabaca.

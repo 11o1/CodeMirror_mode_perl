@@ -1,4 +1,4 @@
-// CodeMirror2 mode/perl/perl.js (text/x-perl) alpha 0.06 (2011-10-04)
+// CodeMirror2 mode/perl/perl.js (text/x-perl) beta 0.07 (2011-10-11)
 // This is a part of CodeMirror from https://github.com/sabaca/CodeMirror_mode_perl (mail@sabaca.com)
 CodeMirror.defineMode("perl",function(config,parserConfig){
 	// http://perldoc.perl.org
@@ -463,34 +463,60 @@ CodeMirror.defineMode("perl",function(config,parserConfig){
 		write				:1,	// - print a picture record
 		y				:null};	// - transliterate a string
 
-	var indentUnit=config.indentUnit;
-	var curPunc;
 	var RXstyle="string-2";
 	var RXmodifiers=/[goseximacplud]/;		// NOTE: "m", "s", "y" and "tr" need to correct real modifiers for each regexp type
 
-	function tokenChain(stream,state,chain,style,eatMore){
+	function tokenChain(stream,state,chain,style,tail){	// NOTE: chain.length > 2 is not working now (it's for s[...][...]geos;)
+		state.chain=null;                               //                                                          12   3tail
+		state.style=null;
+		state.tail=null;
 		state.tokenize=function(stream,state){
-			var escaped=false,next,end=false,i=0;
-			while((next=stream.next())!=null){
-				if(next==chain[i]&&!escaped){
-					if(!chain[++i]){
-						end=true;
-						break}}
-				escaped=!escaped&&next=="\\"}
-			if(end||escaped)
-				state.tokenize=tokenBase;
-			if(eatMore&&end)
-				stream.eatWhile(eatMore);
+			var e=false,c,i=0;
+			while(c=stream.next()){
+				if(c===chain[i]&&!e){
+					if(chain[++i]!==undefined){
+						state.chain=chain[i];
+						state.style=style;
+						state.tail=tail}
+					else if(tail)
+						stream.eatWhile(tail);
+					state.tokenize=tokenPerl;
+					return style}
+				e=!e&&c=="\\"}
 			return style};
 		return state.tokenize(stream,state)}
 
-	function tokenBase(stream,state){
+	function tokenPerl(stream,state){
+		if(stream.eatSpace())
+			return null;
+		if(state.chain)
+			return tokenChain(stream,state,state.chain,state.style,state.tail);
+		if(stream.match(/^\-?[\d\.]/,false))
+			if(stream.match(/^(\-?(\d*\.\d+(e[+-]?\d+)?|\d+\.\d*)|0x[\da-fA-F]+|0b[01]+|\d+(e[+-]?\d+)?)/))
+				return 'number';
 		var ch=stream.next();
 		if(ch=="q"){
 			var c=stream.look(-2);
 			if(!(c&&/\w/.test(c))){
 				c=stream.look(0);
-				if(c=="q"||c=="x"){
+				if(c=="x"){
+					c=stream.look(1);
+					if(c=="("){
+						stream.eatSuffix(2);
+						return tokenChain(stream,state,[")"],RXstyle,RXmodifiers)}
+					if(c=="["){
+						stream.eatSuffix(2);
+						return tokenChain(stream,state,["]"],RXstyle,RXmodifiers)}
+					if(c=="{"){
+						stream.eatSuffix(2);
+						return tokenChain(stream,state,["}"],RXstyle,RXmodifiers)}
+					if(c=="<"){
+						stream.eatSuffix(2);
+						return tokenChain(stream,state,[">"],RXstyle,RXmodifiers)}
+					if(/[\^'"!~\/]/.test(c)){
+						stream.eatSuffix(1);
+						return tokenChain(stream,state,[stream.eat(c)],RXstyle,RXmodifiers)}}
+				else if(c=="q"){
 					c=stream.look(1);
 					if(c=="("){
 						stream.eatSuffix(2);
@@ -506,7 +532,7 @@ CodeMirror.defineMode("perl",function(config,parserConfig){
 						return tokenChain(stream,state,[">"],"string")}
 					if(/[\^'"!~\/]/.test(c)){
 						stream.eatSuffix(1);
-						return tokenChain(stream,state,[stream.eat(/[\^'"!~\/]/)],"string")}}
+						return tokenChain(stream,state,[stream.eat(c)],"string")}}
 				else if(c=="w"){
 					c=stream.look(1);
 					if(c=="("){
@@ -523,7 +549,7 @@ CodeMirror.defineMode("perl",function(config,parserConfig){
 						return tokenChain(stream,state,[">"],"bracket")}
 					if(/[\^'"!~\/]/.test(c)){
 						stream.eatSuffix(1);
-						return tokenChain(stream,state,[stream.eat(/[\^'"!~\/]/)],"bracket")}}
+						return tokenChain(stream,state,[stream.eat(c)],"bracket")}}
 				else if(c=="r"){
 					c=stream.look(1);
 					if(c=="("){
@@ -540,23 +566,22 @@ CodeMirror.defineMode("perl",function(config,parserConfig){
 						return tokenChain(stream,state,[">"],RXstyle,RXmodifiers)}
 					if(/[\^'"!~\/]/.test(c)){
 						stream.eatSuffix(1);
-						return tokenChain(stream,state,[stream.eat(/[\^'"!~\/]/)],RXstyle,RXmodifiers)}}
+						return tokenChain(stream,state,[stream.eat(c)],RXstyle,RXmodifiers)}}
 				else if(/[\^'"!~\/(\[{<]/.test(c)){
 					if(c=="("){
-						stream.eatSuffix(2);
+						stream.eatSuffix(1);
 						return tokenChain(stream,state,[")"],"string")}
 					if(c=="["){
-						stream.eatSuffix(2);
+						stream.eatSuffix(1);
 						return tokenChain(stream,state,["]"],"string")}
 					if(c=="{"){
-						stream.eatSuffix(2);
+						stream.eatSuffix(1);
 						return tokenChain(stream,state,["}"],"string")}
 					if(c=="<"){
-						stream.eatSuffix(2);
+						stream.eatSuffix(1);
 						return tokenChain(stream,state,[">"],"string")}
 					if(/[\^'"!~\/]/.test(c)){
-						stream.eatSuffix(1);
-						return tokenChain(stream,state,[stream.eat(/[\^'"!~\/]/)],"string")}}}}
+						return tokenChain(stream,state,[stream.eat(c)],"string")}}}}
 		if(ch=="m"){
 			var c=stream.look(-2);
 			if(!(c&&/\w/.test(c))){
@@ -578,13 +603,13 @@ CodeMirror.defineMode("perl",function(config,parserConfig){
 				c=stream.eat(/[(\[{<\^'"!~\/]/);
 				if(c){
 					if(c=="[")
-						return tokenChain(stream,state,["]","[","]"],RXstyle,RXmodifiers);
+						return tokenChain(stream,state,["]","]"],RXstyle,RXmodifiers);
 					if(c=="{")
-						return tokenChain(stream,state,["}","{","}"],RXstyle,RXmodifiers);
+						return tokenChain(stream,state,["}","}"],RXstyle,RXmodifiers);
 					if(c=="<")
-						return tokenChain(stream,state,[">","<",">"],RXstyle,RXmodifiers);
+						return tokenChain(stream,state,[">",">"],RXstyle,RXmodifiers);
 					if(c=="(")
-						return tokenChain(stream,state,[")","(",")"],RXstyle,RXmodifiers);
+						return tokenChain(stream,state,[")",")"],RXstyle,RXmodifiers);
 					return tokenChain(stream,state,[c,c],RXstyle,RXmodifiers)}}}
 		if(ch=="y"){
 			var c=/[\/>\]})\w]/.test(stream.look(-2));
@@ -592,13 +617,13 @@ CodeMirror.defineMode("perl",function(config,parserConfig){
 				c=stream.eat(/[(\[{<\^'"!~\/]/);
 				if(c){
 					if(c=="[")
-						return tokenChain(stream,state,["]","[","]"],RXstyle,RXmodifiers);
+						return tokenChain(stream,state,["]","]"],RXstyle,RXmodifiers);
 					if(c=="{")
-						return tokenChain(stream,state,["}","{","}"],RXstyle,RXmodifiers);
+						return tokenChain(stream,state,["}","}"],RXstyle,RXmodifiers);
 					if(c=="<")
-						return tokenChain(stream,state,[">","<",">"],RXstyle,RXmodifiers);
+						return tokenChain(stream,state,[">",">"],RXstyle,RXmodifiers);
 					if(c=="(")
-						return tokenChain(stream,state,[")","(",")"],RXstyle,RXmodifiers);
+						return tokenChain(stream,state,[")",")"],RXstyle,RXmodifiers);
 					return tokenChain(stream,state,[c,c],RXstyle,RXmodifiers)}}}
 		if(ch=="t"){
 			var c=/[\/>\]})\w]/.test(stream.look(-2));
@@ -607,14 +632,16 @@ CodeMirror.defineMode("perl",function(config,parserConfig){
 				c=stream.eat(/[(\[{<\^'"!~\/]/);
 				if(c){
 					if(c=="[")
-						return tokenChain(stream,state,["]","[","]"],RXstyle,RXmodifiers);
+						return tokenChain(stream,state,["]","]"],RXstyle,RXmodifiers);
 					if(c=="{")
-						return tokenChain(stream,state,["}","{","}"],RXstyle,RXmodifiers);
+						return tokenChain(stream,state,["}","}"],RXstyle,RXmodifiers);
 					if(c=="<")
-						return tokenChain(stream,state,[">","<",">"],RXstyle,RXmodifiers);
+						return tokenChain(stream,state,[">",">"],RXstyle,RXmodifiers);
 					if(c=="(")
-						return tokenChain(stream,state,[")","(",")"],RXstyle,RXmodifiers);
+						return tokenChain(stream,state,[")",")"],RXstyle,RXmodifiers);
 					return tokenChain(stream,state,[c,c],RXstyle,RXmodifiers)}}}}
+		if(ch=="`"){
+			return tokenChain(stream,state,[ch],"variable-2")}
 		if(ch=="/"){
 			return tokenChain(stream,state,[ch],RXstyle,RXmodifiers)}
 		if(ch=="$"){
@@ -643,9 +670,7 @@ CodeMirror.defineMode("perl",function(config,parserConfig){
 				return "comment"}}
 		if(/[:+\-\^*$&%@=<>!?|\/~\.]/.test(ch)){
 			var p=stream.pos;
-			stream.eatWhile(ch);
-			if(/[?:{}()\[\]]/.test(stream.current()))
-				curPunc="newstatement";
+			stream.eatWhile(/[:+\-\^*$&%@=<>!?|\/~\.]/);
 			if(PERL[stream.current()])
 				return "operator";
 			else
@@ -666,21 +691,6 @@ CodeMirror.defineMode("perl",function(config,parserConfig){
 				return "string";
 			else
 				stream.pos=p}
-//!! need to correct
-//    $n = 1234;	    # decimal integer
-//    $n = 0b1110011;	    # binary integer
-//    $n = 01234;	    # octal integer
-//    $n = 0x1234;	    # hexadecimal integer
-//    $n = 12.34e-56;	    # exponential notation
-//    $n = "-12.34e56";	    # number specified as a string
-//    $n = "1234";	    # number specified as a string
-		if(/\d/.test(ch)){
-			stream.eatWhile(/[\d_e\-\.]/);
-			return "number"}
-		if(ch=="-"&&/\d/.test(stream.look(0))&&stream.eatWhile(/[\d_e\-\.]/)){
-			return "number"}
-		if(ch=="."&&/[^\.\w]/.test(stream.look(-2))&&stream.eatWhile(/\d/)){
-			return "number"}
 		if(/[A-Z]/.test(ch)){
 			var l=stream.look(-2);
 			var p=stream.pos;
@@ -691,9 +701,8 @@ CodeMirror.defineMode("perl",function(config,parserConfig){
 				var c=PERL[stream.current()];
 				if(!c)
 					return "meta";
-				if(c[1]){
+				if(c[1])
 					c=c[0];
-					curPunc="newstatement"}
 				if(l!=":"){
 					if(c==1)
 						return "keyword";
@@ -715,9 +724,8 @@ CodeMirror.defineMode("perl",function(config,parserConfig){
 			var c=PERL[stream.current()];
 			if(!c)
 				return "meta";
-			if(c[1]){
+			if(c[1])
 				c=c[0];
-				curPunc="newstatement"}
 			if(l!=":"){
 				if(c==1)
 					return "keyword";
@@ -733,78 +741,19 @@ CodeMirror.defineMode("perl",function(config,parserConfig){
 					return "meta"}
 			else
 				return "meta"}
-		return "meta"}
-
-	function Context(indented,column,type,align,prev){
-		this.indented=indented;
-		this.column=column;
-		this.type=type;
-		this.align=align;
-		this.prev=prev}
-
-	function pushContext(state,col,type){
-		return state.context=new Context(state.indented,col,type,null,state.context)}
-
-	function popContext(state){
-		var t=state.context.type;
-		if(t==")"||t=="]"||t=="}")
-			state.indented = state.context.indented;
-		return state.context=state.context.prev}
+		return null}
 
 	return{
-		startState:function(basecolumn){
+		startState:function(){
 			return{
-				tokenize:null,
-				context:new Context((basecolumn||0)-indentUnit,0,"top",false),
-				indented:0,
-				startOfLine:true}},
+				tokenize:tokenPerl,
+				chain:null,
+				style:null,
+				tail:null}},
 		token:function(stream,state){
-			var ctx=state.context;
-			if(stream.sol()){
-				if(ctx.align==null)
-					ctx.align=false;
-				state.indented=stream.indentation();
-				state.startOfLine=true}
-			if(stream.eatSpace())
-				return null;
-			curPunc=null;
-			var style=(state.tokenize||tokenBase)(stream,state);
-			if(style=="comment"||style=="meta")
-				return style;
-			if(ctx.align==null)
-				ctx.align=true;
-			if((curPunc=="?"||curPunc==":")&&ctx.type=="statement")
-				popContext(state);
-			else if(curPunc=="{")
-				pushContext(state,stream.column(),"}");
-			else if(curPunc=="[")
-				pushContext(state,stream.column(),"]");
-			else if(curPunc=="(")
-				pushContext(state,stream.column(),")");
-			else if(curPunc=="}"){
-				while(ctx.type=="statement")
-					ctx=popContext(state);
-				if(ctx.type=="}")
-					ctx=popContext(state);
-				while(ctx.type=="statement")
-					ctx=popContext(state)}
-			else if(curPunc==ctx.type)
-				popContext(state);
-			else if(ctx.type=="}"||ctx.type=="top"||(ctx.type=="statement"&&curPunc=="newstatement"))
-				pushContext(state,stream.column(),"statement");
-			state.startOfLine=false;
-			return style},
-		indent:function(state,textAfter){
-			if(state.tokenize!=tokenBase&&state.tokenize!=null)
-				return 0;
-			var firstChar=textAfter&&textAfter.charAt(0),ctx=state.context,closing=firstChar==ctx.type;
-			if(ctx.type=="statement")
-				return ctx.indented+(firstChar=="{"?0:indentUnit);
-			else if(ctx.align)
-				return ctx.column+(closing?0:1);
-			else
-				return ctx.indented+(closing?0:indentUnit)},
-		electricChars:"?:{}()[]"}});
+			return (state.tokenize||tokenPerl)(stream,state)},
+		electricChars:"{}"}});
+
 CodeMirror.defineMIME("text/x-perl", "perl");
 
 // it's like "peek", but need for look-ahead or look-behind if index < 0
