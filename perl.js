@@ -1,4 +1,4 @@
-// CodeMirror2 mode/perl/perl.js (text/x-perl) beta 0.07 (2011-10-11)
+// CodeMirror2 mode/perl/perl.js (text/x-perl) beta 0.08 (2011-10-11)
 // This is a part of CodeMirror from https://github.com/sabaca/CodeMirror_mode_perl (mail@sabaca.com)
 CodeMirror.defineMode("perl",function(config,parserConfig){
 	// http://perldoc.perl.org
@@ -232,23 +232,23 @@ CodeMirror.defineMode("perl",function(config,parserConfig){
 		'$OLD_PERL_VERSION'		:    5,
 		'$]'				:    5,
 						//	PERL blocks
-		if				:[1,1],
+		'if'				:[1,1],
 		elsif				:[1,1],
-		else				:[1,1],
-		while				:[1,1],
+		'else'				:[1,1],
+		'while'				:[1,1],
 		unless				:[1,1],
-		for				:[1,1],
+		'for'				:[1,1],
 		foreach				:[1,1],
 						//	PERL functions
-		abs				:1,	// - absolute value function
+		'abs'				:1,	// - absolute value function
 		accept				:1,	// - accept an incoming socket connect
 		alarm				:1,	// - schedule a SIGALRM
-		atan2				:1,	// - arctangent of Y/X in the range -PI to PI
+		'atan2'				:1,	// - arctangent of Y/X in the range -PI to PI
 		bind				:1,	// - binds an address to a socket
 		binmode				:1,	// - prepare binary files for I/O
 		bless				:1,	// - create an object
 		bootstrap			:1,	//
-		break				:1,	// - break out of a "given" block
+		'break'				:1,	// - break out of a "given" block
 		caller				:1,	// - get context of the current subroutine call
 		chdir				:1,	// - change your current working directory
 		chmod				:1,	// - changes the permissions on a list of files
@@ -260,16 +260,16 @@ CodeMirror.defineMode("perl",function(config,parserConfig){
 		close				:1,	// - close file (or pipe or socket) handle
 		closedir			:1,	// - close directory handle
 		connect				:1,	// - connect to a remote socket
-		continue			:[1,1],	// - optional trailing block in a while or foreach
-		cos				:1,	// - cosine function
+		'continue'			:[1,1],	// - optional trailing block in a while or foreach
+		'cos'				:1,	// - cosine function
 		crypt				:1,	// - one-way passwd-style encryption
 		dbmclose			:1,	// - breaks binding on a tied dbm file
 		dbmopen				:1,	// - create binding on a tied dbm file
-		default				:1,	//
+		'default'			:1,	//
 		defined				:1,	// - test whether a value, variable, or function is defined
-		delete				:1,	// - deletes a value from a hash
+		'delete'			:1,	// - deletes a value from a hash
 		die				:1,	// - raise an exception or bail out
-		do				:1,	// - turn a BLOCK into a TERM
+		'do'				:1,	// - turn a BLOCK into a TERM
 		dump				:1,	// - create an immediate core dump
 		each				:1,	// - retrieve the next key/value pair from a hash
 		endgrent			:1,	// - be done using group file
@@ -279,11 +279,11 @@ CodeMirror.defineMode("perl",function(config,parserConfig){
 		endpwent			:1,	// - be done using passwd file
 		endservent			:1,	// - be done using services file
 		eof				:1,	// - test a filehandle for its end
-		eval				:1,	// - catch exceptions or compile and run code
-		exec				:1,	// - abandon this program to run another
+		'eval'				:1,	// - catch exceptions or compile and run code
+		'exec'				:1,	// - abandon this program to run another
 		exists				:1,	// - test whether a hash key is present
 		exit				:1,	// - terminate this program
-		exp				:1,	// - raise I to a power
+		'exp'				:1,	// - raise I to a power
 		fcntl				:1,	// - file control system call
 		fileno				:1,	// - return file descriptor from filehandle
 		flock				:1,	// - lock an entire file with an advisory lock
@@ -319,26 +319,26 @@ CodeMirror.defineMode("perl",function(config,parserConfig){
 		given				:1,	//
 		glob				:1,	// - expand filenames using wildcards
 		gmtime				:1,	// - convert UNIX time into record or string using Greenwich time
-		goto				:1,	// - create spaghetti code
+		'goto'				:1,	// - create spaghetti code
 		grep				:1,	// - locate elements in a list test true against a given criterion
 		hex				:1,	// - convert a string to a hexadecimal number
-		import				:1,	// - patch a module's namespace into your own
+		'import'			:1,	// - patch a module's namespace into your own
 		index				:1,	// - find a substring within a string
 		int				:1,	// - get the integer portion of a number
 		ioctl				:1,	// - system-dependent device control system call
-		join				:1,	// - join a list into a string using a separator
+		'join'				:1,	// - join a list into a string using a separator
 		keys				:1,	// - retrieve list of indices from a hash
 		kill				:1,	// - send a signal to a process or process group
 		last				:1,	// - exit a block prematurely
 		lc				:1,	// - return lower-case version of a string
 		lcfirst				:1,	// - return a string with just the next letter in lower case
 		length				:1,	// - return the number of bytes in a string
-		link				:1,	// - create a hard link in the filesytem
+		'link'				:1,	// - create a hard link in the filesytem
 		listen				:1,	// - register your socket as a server
 		local				: 2,	// - create a temporary value for a global variable (dynamic scoping)
 		localtime			:1,	// - convert UNIX time into record or string using local time
 		lock				:1,	// - get a thread lock on a variable, subroutine, or method
-		log				:1,	// - retrieve the natural logarithm for a number
+		'log'				:1,	// - retrieve the natural logarithm for a number
 		lstat				:1,	// - stat a symbolic link
 		m				:null,	// - match a string with a regular expression pattern
 		map				:1,	// - apply a change to a list to get back a new list with the changes
@@ -348,7 +348,7 @@ CodeMirror.defineMode("perl",function(config,parserConfig){
 		msgrcv				:1,	// - receive a SysV IPC message from a message queue
 		msgsnd				:1,	// - send a SysV IPC message to a message queue
 		my				: 2,	// - declare and assign a local variable (lexical scoping)
-		new				:1,	//
+		'new'				:1,	//
 		next				:1,	// - iterate a block prematurely
 		no				:1,	// - unimport some module symbols or semantics at compile time
 		oct				:1,	// - convert a string to an octal number
@@ -357,7 +357,7 @@ CodeMirror.defineMode("perl",function(config,parserConfig){
 		ord				:1,	// - find a character's numeric representation
 		our				: 2,	// - declare and assign a package variable (lexical scoping)
 		pack				:1,	// - convert a list into a binary representation
-		package				:1,	// - declare a separate global namespace
+		'package'			:1,	// - declare a separate global namespace
 		pipe				:1,	// - open a pair of connected filehandles
 		pop				:1,	// - remove the last element from an array and return it
 		pos				:1,	// - find or set the offset for the last/next m//g search
@@ -383,7 +383,7 @@ CodeMirror.defineMode("perl",function(config,parserConfig){
 		rename				:1,	// - change a filename
 		require				:1,	// - load in external functions from a library at runtime
 		reset				:1,	// - clear all variables of a given name
-		return				:1,	// - get out of a function early
+		'return'			:1,	// - get out of a function early
 		reverse				:1,	// - flip a string or a list
 		rewinddir			:1,	// - reset directory handle
 		rindex				:1,	// - right-to-left substring search
@@ -413,21 +413,21 @@ CodeMirror.defineMode("perl",function(config,parserConfig){
 		shmread				:1,	// - read SysV shared memory
 		shmwrite			:1,	// - write SysV shared memory
 		shutdown			:1,	// - close down just half of a socket connection
-		sin				:1,	// - return the sine of a number
+		'sin'				:1,	// - return the sine of a number
 		sleep				:1,	// - block for some number of seconds
 		socket				:1,	// - create a socket
 		socketpair			:1,	// - create a pair of sockets
-		sort				:1,	// - sort a list of values
+		'sort'				:1,	// - sort a list of values
 		splice				:1,	// - add or remove elements anywhere in an array
-		split				:1,	// - split up a string using a regexp delimiter
+		'split'				:1,	// - split up a string using a regexp delimiter
 		sprintf				:1,	// - formatted print into a string
-		sqrt				:1,	// - square root function
+		'sqrt'				:1,	// - square root function
 		srand				:1,	// - seed the random number generator
 		stat				:1,	// - get a file's status information
 		state				:1,	// - declare and assign a state variable (persistent lexical scoping)
 		study				:1,	// - optimize input data for repeated searches
-		sub				:1,	// - declare a subroutine, possibly anonymously
-		substr				:1,	// - get or alter a portion of a stirng
+		'sub'				:1,	// - declare a subroutine, possibly anonymously
+		'substr'			:1,	// - get or alter a portion of a stirng
 		symlink				:1,	// - create a symbolic link to a file
 		syscall				:1,	// - execute an arbitrary system call
 		sysopen				:1,	// - open a file, pipe, or descriptor
@@ -486,6 +486,14 @@ CodeMirror.defineMode("perl",function(config,parserConfig){
 			return style};
 		return state.tokenize(stream,state)}
 
+	function tokenSOMETHING(stream,state,string){
+		state.tokenize=function(stream,state){
+			if(stream.string==string)
+				state.tokenize=tokenPerl;
+			stream.skipToEnd();
+			return "string"};
+		return state.tokenize(stream,state)}
+
 	function tokenPerl(stream,state){
 		if(stream.eatSpace())
 			return null;
@@ -494,7 +502,19 @@ CodeMirror.defineMode("perl",function(config,parserConfig){
 		if(stream.match(/^\-?[\d\.]/,false))
 			if(stream.match(/^(\-?(\d*\.\d+(e[+-]?\d+)?|\d+\.\d*)|0x[\da-fA-F]+|0b[01]+|\d+(e[+-]?\d+)?)/))
 				return 'number';
+		if(stream.match(/^<<(?=\w)/)){			// NOTE: <<SOMETHING\n...\nSOMETHING\n
+			stream.eatWhile(/\w/);
+			return tokenSOMETHING(stream,state,stream.current().substr(2))}
 		var ch=stream.next();
+		if(ch=='"'||ch=="'"){				// NOTE: ' or " or <<'SOMETHING'\n...\nSOMETHING\n or <<"SOMETHING"\n...\nSOMETHING\n
+			if(stream.prefix(3)=="<<"+ch){
+				var p=stream.pos;
+				stream.eatWhile(/\w/);
+				var n=stream.current().substr(1);
+				if(n&&stream.eat(ch))
+					return tokenSOMETHING(stream,state,n);
+				stream.pos=p}
+			return tokenChain(stream,state,[ch],"string")}
 		if(ch=="q"){
 			var c=stream.look(-2);
 			if(!(c&&/\w/.test(c))){
@@ -683,8 +703,6 @@ CodeMirror.defineMode("perl",function(config,parserConfig){
 					return tokenChain(stream,state,['\0'],"variable-2")}
 				else if(stream.suffix(7)=="_C__"){
 					return tokenChain(stream,state,['\0'],"string")}}}
-		if(ch=='"'||ch=="'"){
-			return tokenChain(stream,state,[ch],"string")}
 		if(/\w/.test(ch)){
 			var p=stream.pos;
 			if(stream.look(-2)=="{"&&(stream.look(0)=="}"||stream.eatWhile(/\w/)&&stream.look(0)=="}"))
@@ -762,8 +780,8 @@ CodeMirror.StringStream.prototype.look=function(c){
 
 // return a part of prefix of current stream from current position
 CodeMirror.StringStream.prototype.prefix=function(c){
-	var x=this.pos-1-c;
-	return this.string.substr((c&&x>=0?x:0),this.pos+1)};
+	var x=this.pos-c;
+	return this.string.substr((x>=0?x:0),c)};
 
 // return a part of suffix of current stream from current position
 CodeMirror.StringStream.prototype.suffix=function(c){
