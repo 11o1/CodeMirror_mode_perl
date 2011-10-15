@@ -1,9 +1,12 @@
-hi. this is a beta 0.08 (2011-10-11) of mode/perl.js (text/x-perl)
+hi. this is a beta 0.09 (2011-10-15) of mode/perl/perl.js (text/x-perl)
 
-fixes: <<'SOMETHING' or <<"SOMETHING" or <<SOMETHING
+news: perl-compact.js (3x)
+
+fixes: 
+=item
 multi-line
-strings
-SOMETHING
+comments
+=cut
 
 bugs: let me know <mail@sabaca.com>.
 
