@@ -1,12 +1,6 @@
-hi. this is a beta 0.09 (2011-10-15) of mode/perl/perl.js (text/x-perl)
+hi. this is a beta 0.10 (2011-11-08) of mode/perl/perl.js (text/x-perl)
 
-news: perl-compact.js (3x)
-
-fixes: 
-=item
-multi-line
-comments
-=cut
+fixes: 1/2;
 
 bugs: let me know <mail@sabaca.com>.
 
