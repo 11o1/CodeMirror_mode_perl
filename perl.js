@@ -665,7 +665,7 @@ CodeMirror.defineMode("perl",function(config,parserConfig){
 		if(ch=="`"){
 			return tokenChain(stream,state,[ch],"variable-2")}
 		if(ch=="/"){
-			if(/[\w\)\-\+\}\]]\s*$/.test(stream.prefix()))
+			if(!/~\s*$/.test(stream.prefix()))
 				return "operator";
 			else
 				return tokenChain(stream,state,[ch],RXstyle,RXmodifiers)}
