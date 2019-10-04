@@ -1,5 +1,5 @@
 // CodeMirror2 mode/perl/perl.js (text/x-perl) beta 0.10 (2011-11-08)
-// This is a part of CodeMirror from https://github.com/sabaca/CodeMirror_mode_perl (mail@sabaca.com)
+// This is a part of CodeMirror from https://github.com/objectonline/CodeMirror_mode_perl (ak@object.online)
 CodeMirror.defineMode("perl",function(config,parserConfig){
 	// http://perldoc.perl.org
 	var PERL={				    	//   null - magic touch
